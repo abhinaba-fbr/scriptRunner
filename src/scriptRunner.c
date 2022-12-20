@@ -40,16 +40,19 @@ int main(int argc, char **argv) {
 
     while(getline(&input_line, &len, file)!=EOF) {
         struct command_args* cmd=(struct command_args*)malloc(sizeof(struct command_args));
+        if(cmd==NULL) {
+            perror("Error! allocating memory");
+            status=1;
+            goto exit_label;
+        }
         cmd->command=(char*)malloc(strlen(input_line)*sizeof(char));
         strcpy(cmd->command, input_line);    
         parse_command(cmd);
-        free(input_line);
         input_line=NULL;
         len=0;
         fflush(file);
         fflush(stdout);
         execute_command(cmd);
-        free(cmd);
     }
     // Wait for all the child processes to terminate
     while(wait(NULL)>0);
