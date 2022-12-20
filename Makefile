@@ -1,5 +1,6 @@
-install: scriptRunner
-	rm -rf *.o
+install: scriptRunner clean
+	cp scriptRunner /usr/local/bin
+	rm -rf scriptRunner
 
 scriptRunner: command.o scriptRunner.o
 	gcc scriptRunner.o command.o os.o types.o cleanup.o misc.o -o scriptRunner
@@ -22,5 +23,8 @@ cleanup.o:
 misc.o:
 	gcc src/misc.c -c misc.o
 
+clean:
+	rm -rf *.o
+
 uninstall:
-	rm -rf scriptRunner
+	rm -rf /usr/local/bin/scriptRunner
