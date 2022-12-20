@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
         if(cmd==NULL) {
             perror("Error! allocating memory");
             status=1;
+            fclose(file);
             goto exit_label;
         }
         cmd->command=(char*)malloc(strlen(input_line)*sizeof(char));
@@ -58,9 +59,9 @@ int main(int argc, char **argv) {
     while(wait(NULL)>0);
 
     fclose(file);
+    printf("Closing experiment!!\n");
     exit_label:
     clean_up();
-    printf("Closing experiment!!\n");
     if(status)
         goto exit_error_label;
     return 0;

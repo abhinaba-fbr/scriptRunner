@@ -20,6 +20,8 @@ void clean_up() {
     // kill all background_processes
     for(int i=0;i<bg_processes->size;i++)
         kill(bg_processes->list[i], SIGTERM);
+    free(bg_processes->list);
+    free(bg_processes);
     system("ip --all netns del");
     printf("Clean up Done!!\n");
     return;
