@@ -28,8 +28,9 @@ char* _get_file_path(char* path) {
         new_path[1]='/';
         return new_path;
     }
-    new_path=(char*)malloc(sizeof(char)*(((has_file)?end-beg:len-beg-1)));
-    for(int i=beg, j=0;j<((has_file)?end-beg:len-beg-1);i++, j++) {
+    unsigned int size=(has_file)?end-beg:len-beg-1;
+    new_path=(char*)malloc(sizeof(char)*size);
+    for(int i=beg, j=0;j<size;i++, j++) {
         new_path[j]=path[i];
     }
     return new_path;
