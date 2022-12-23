@@ -32,6 +32,10 @@ int is_set_time(char* line) {
     return strstr(line, "---set-time")!=NULL;
 }
 
+int is_set_time_wait(char* line) {
+    return strstr(line, "---set-time-wait")!=NULL;
+}
+
 int is_background(char* line) {
     return strstr(line, "---background")!=NULL;
 }

@@ -20,11 +20,13 @@ void parse_command(void* cmd_args) {
     }
     // OS process
     else if(is_os_cd(cmd->command)) {
-        cmd->len=strlen(cmd->command);
         cmd->type=OS;
+        cmd->len=strlen(cmd->command);
     }
-    // Time process
-    else if(is_set_time(cmd->command)) {
+    // Time process or Time wait process
+    else if(is_set_time(cmd->command) || is_set_time_wait(cmd->command)) {
+        if(is_set_time_wait(cmd->command)) cmd->type=TIME_WAIT;
+        else cmd->type=TIME;
         int pos=strstr(cmd->command, "---set-time") - cmd->command;
         int time=0;
         for(int i=pos;i<cmd->len;i++) {
@@ -38,10 +40,10 @@ void parse_command(void* cmd_args) {
         cmd->command=new_command;
         cmd->time=time;
         cmd->len=strlen(cmd->command);
-        cmd->type=TIME;
     }
     // Background process
     else if(is_background(cmd->command)) {
+        cmd->type=BACKGROUND;
         int pos=strstr(cmd->command, "---background") - cmd->command;
         char* new_command=(char*)malloc(sizeof(char)*(pos+1));
         strncpy(new_command, cmd->command, pos);
@@ -49,7 +51,6 @@ void parse_command(void* cmd_args) {
         new_command[pos]='&';
         cmd->command=new_command;
         cmd->len=strlen(cmd->command);
-        cmd->type=BACKGROUND;
     }
     return;
 }
@@ -65,16 +66,18 @@ void execute_command(void* cmd_args) {
     else if(cmd->type==OS) {
         change_directory(cmd->command);
     }
-    // Time process
-    else if(cmd->type==TIME) {
+    // Time process or Time wait process
+    else if(cmd->type==TIME || cmd->type==TIME_WAIT) {
         pid=fork();
         if(pid==0) {
             sleep(cmd->time);
             system(cmd->command);
             exit(0);
         }
-        else if(pid>0)
-            return;
+        else if(pid>0) {
+            if(cmd->type==TIME_WAIT) wait(NULL);
+            else return;
+        }
         else
             perror("Failed to fork() child");
     }
