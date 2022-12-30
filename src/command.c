@@ -89,10 +89,8 @@ void execute_command(void* cmd_args) {
             system(cmd->command);
             exit(0);
         }
-        else if(pid>0) {
+        else if(pid>0) 
             add_background_process(pid);
-            wait(NULL);
-        }
         else
             perror("Failed to fork() child");
     }
