@@ -1,8 +1,10 @@
 # scriptRunner
 
 It is a utility build to run shell scripts in Linux systems. It adds few additional features like -
-- timely executiong of a command, i.e a command can be executed with certain ammount of delay. Example 
+- Timely executiong of a command, i.e a command can be executed with certain ammount of delay in background (interpretation continues). Example 
   `command ---set-time #`
+- Timely executiong of a command, i.e a command can be executed with certain ammount of delay in forground (interpretation moves ahead only after the current process execution completes). Example 
+  `command ---set-time-wait #`
 - Add background process. It is similar to running commands in daemon. Example 
   `command ---background`
 - Allow cd in shell scripting. Initial cwd is considered as the directory where the script is located.
