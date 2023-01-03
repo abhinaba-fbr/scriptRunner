@@ -55,8 +55,6 @@ int main(int argc, char **argv) {
         fflush(stdout);
         execute_command(cmd);
     }
-    // Wait for all the child processes to terminate
-    while(wait(NULL)>0);
 
     fclose(file);
     printf("Closing experiment!!\n");

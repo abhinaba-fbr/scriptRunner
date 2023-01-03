@@ -48,7 +48,6 @@ void parse_command(void* cmd_args) {
         char* new_command=(char*)malloc(sizeof(char)*(pos+1));
         strncpy(new_command, cmd->command, pos);
         free(cmd->command);
-        new_command[pos]='&';
         cmd->command=new_command;
         cmd->len=strlen(cmd->command);
     }
@@ -75,8 +74,9 @@ void execute_command(void* cmd_args) {
             exit(0);
         }
         else if(pid>0) {
-            if(cmd->type==TIME_WAIT) wait(NULL);
-            else return;
+            if(cmd->type==TIME_WAIT) waitpid(pid, NULL, 0);
+            else add_background_process(pid);
+            return;
         }
         else
             perror("Failed to fork() child");
@@ -89,8 +89,10 @@ void execute_command(void* cmd_args) {
             system(cmd->command);
             exit(0);
         }
-        else if(pid>0) 
+        else if(pid>0) {
             add_background_process(pid);
+            return;
+        }
         else
             perror("Failed to fork() child");
     }
