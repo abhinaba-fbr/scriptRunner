@@ -19,4 +19,4 @@ ip netns exec h2 ip address add 10.0.0.2/24 dev eth1
 ip netns exec h1 ip link set eth0 down ---set-time 5
 ip netns exec h1 ip link set eth0 up ---set-time 10
 
-ip netns exec h1 ping -c 15 10.0.0.2
+ip netns exec h1 ping -c 15 10.0.0.2 ---set-time-wait 2
