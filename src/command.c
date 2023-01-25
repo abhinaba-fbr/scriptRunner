@@ -70,12 +70,12 @@ void execute_command(void* cmd_args) {
         pid=fork();
         if(pid==0) {
             sleep(cmd->time);
-            system(cmd->command);
+            execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
             exit(0);
         }
         else if(pid>0) {
             if(cmd->type==TIME_WAIT) waitpid(pid, NULL, 0);
-            else add_background_process(pid);
+            else add_background_process(getpgid(pid));
             return;
         }
         else
@@ -86,11 +86,11 @@ void execute_command(void* cmd_args) {
         pid=fork();
         if(pid==0) {
             sleep(cmd->time);
-            system(cmd->command);
+            execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
             exit(0);
         }
         else if(pid>0) {
-            add_background_process(pid);
+            add_background_process(getpgid(pid));
             return;
         }
         else
@@ -98,6 +98,14 @@ void execute_command(void* cmd_args) {
     }
     // Normal process
     else {
-        system(cmd->command);
+        pid=fork();
+        if(pid==0) {
+            execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
+            exit(0);
+        }
+        else if(pid>0) {
+            waitpid(pid, NULL, 0);
+            return;
+        }
     }
 }

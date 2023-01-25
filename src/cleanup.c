@@ -4,6 +4,8 @@
 #include<unistd.h>
 #include "include/cleanup.h"
 
+struct background_processes* bg_processes=NULL;
+
 void signal_handler(int sig) {
     if(sig==SIGINT) {
         clean_up();
@@ -15,11 +17,11 @@ void signal_handler(int sig) {
     }
 }
 
-struct background_processes* bg_processes=NULL;
-
 void init() {
-    signal(SIGTERM, signal_handler);
-    signal(SIGINT, signal_handler);
+    if(signal(SIGINT, signal_handler)==SIG_ERR)
+        printf("scriptRunner interrupted!");
+    if(signal(SIGTERM, signal_handler)==SIG_ERR)
+        printf("scriptRunner terminated!");
     bg_processes=(struct background_processes*)malloc(sizeof(struct background_processes));
     bg_processes->list=(int*)malloc(sizeof(int)*100);
     bg_processes->size=0;
@@ -32,7 +34,7 @@ void add_background_process(int pid) {
 void clean_up() {
     // kill all background_processes
     for(int i=0;i<bg_processes->size;i++)
-        kill(bg_processes->list[i], SIGTERM);
+        killpg(bg_processes->list[i], SIGTERM);
     free(bg_processes->list);
     free(bg_processes);
     system("ip --all netns del");

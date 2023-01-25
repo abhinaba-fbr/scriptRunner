@@ -1,5 +1,6 @@
 # ifndef _TYPES
 # define _TYPES
+# define INTERPRETER "/bin/sh"
 
 typedef enum COMMAND_TYPE {
     NORMAL,
