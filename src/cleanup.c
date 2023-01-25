@@ -4,9 +4,22 @@
 #include<unistd.h>
 #include "include/cleanup.h"
 
+void signal_handler(int sig) {
+    if(sig==SIGINT) {
+        clean_up();
+        exit(1);
+    }
+    else if(sig==SIGTERM) {
+        clean_up();
+        exit(1);
+    }
+}
+
 struct background_processes* bg_processes=NULL;
 
 void init() {
+    signal(SIGTERM, signal_handler);
+    signal(SIGINT, signal_handler);
     bg_processes=(struct background_processes*)malloc(sizeof(struct background_processes));
     bg_processes->list=(int*)malloc(sizeof(int)*100);
     bg_processes->size=0;

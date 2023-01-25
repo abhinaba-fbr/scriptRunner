@@ -10,6 +10,7 @@
 /*
     To Do -
     1. Imporve get_file_path API (in os.h)
+    2. Terminate server (background) processes
 */
 
 // Main function
