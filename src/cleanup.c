@@ -3,6 +3,8 @@
 #include<signal.h>
 #include<unistd.h>
 #include "include/cleanup.h"
+#include "include/os.h"
+#include "include/logging.h"
 
 struct background_processes* bg_processes=NULL;
 
@@ -17,7 +19,9 @@ void signal_handler(int sig) {
     }
 }
 
-void init() {
+void init(char* scriptfile, int log_status) {
+    init_logging(log_status);
+    change_directory(scriptfile);
     if(signal(SIGINT, signal_handler)==SIG_ERR)
         printf("scriptRunner interrupted!");
     if(signal(SIGTERM, signal_handler)==SIG_ERR)
@@ -38,6 +42,7 @@ void clean_up() {
     free(bg_processes->list);
     free(bg_processes);
     system("ip --all netns del");
+    exit_logging();
     printf("Clean up Done!!\n");
     return;
 }

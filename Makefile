@@ -17,11 +17,14 @@ os.o:
 types.o: cleanup.o
 	gcc src/types.c -c types.o
 
-cleanup.o:
+cleanup.o: logging.o
 	gcc src/cleanup.c -c cleanup.o
 
 misc.o:
 	gcc src/misc.c -c misc.o
+
+logging.o:
+	gcc src/logging.c -c logging.o
 
 clean:
 	rm -rf *.o

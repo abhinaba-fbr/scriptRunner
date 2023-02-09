@@ -2,43 +2,65 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
+#include<sys/wait.h>
 #include "include/cleanup.h"
 #include "include/command.h"
 #include "include/os.h"
-#include<sys/wait.h>
 
 /*
     To Do -
     1. Imporve get_file_path API (in os.h)
-    2. Terminate server (background) processes
 */
 
 // Main function
 
 int main(int argc, char **argv) {
-    init();
-
     int status=0;
-    if(argc!=2) {
+    int log_status=0;
+    char* scriptfile;
+    if(argc<2) {
         printf("Error! Input file not provided\n");
         status=1;
         goto exit_label;
         exit_error_label:
             exit(1);
     }
+    else if(argc==2) {
+        if(strstr(argv[1], "---logging")){
+            printf("Error! Input file not provided\n");
+            status=1;
+            goto exit_label;
+        }
+        scriptfile=(char*)malloc(sizeof(char)*strlen(argv[1]));
+        strcpy(scriptfile, argv[1]);
+    }
+    else if(argc==3) {
+        if(strstr(argv[1], "---logging")) {
+            scriptfile=(char*)malloc(sizeof(char)*strlen(argv[1]));
+            strcpy(scriptfile, argv[1]);
+        }
+        else {
+            scriptfile=(char*)malloc(sizeof(char)*strlen(argv[2]));
+            strcpy(scriptfile, argv[2]);
+        }
+    }
+    else {
+        printf("Error! argument not recognized\n");
+        status=1;
+        goto exit_label;
+    }
 
+    init(scriptfile, log_status);
     FILE *file;
-    file=fopen(argv[1], "r");
+    file=fopen(scriptfile, "r");
     if(file==NULL) {
         perror("Error! script file failed to open");
         status=1;
         goto exit_label;
     }
 
-    change_directory(argv[1]);
     char* input_line=NULL;
     size_t len=0;
-
     while(getline(&input_line, &len, file)!=EOF) {
         struct command_args* cmd=(struct command_args*)malloc(sizeof(struct command_args));
         if(cmd==NULL) {
@@ -48,7 +70,7 @@ int main(int argc, char **argv) {
             goto exit_label;
         }
         cmd->command=(char*)malloc(strlen(input_line)*sizeof(char));
-        strcpy(cmd->command, input_line);    
+        strcpy(cmd->command, input_line);
         parse_command(cmd);
         input_line=NULL;
         len=0;

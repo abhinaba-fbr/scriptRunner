@@ -3,11 +3,13 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<sys/wait.h>
+#include<time.h>
 #include "include/types.h"
 #include "include/misc.h"
 #include "include/os.h"
 #include "include/cleanup.h"
 #include "include/command.h"
+#include "include/logging.h"
 
 void parse_command(void* cmd_args) {
     struct command_args* cmd=(struct command_args*)cmd_args;
@@ -69,8 +71,12 @@ void execute_command(void* cmd_args) {
     else if(cmd->type==TIME || cmd->type==TIME_WAIT) {
         pid=fork();
         if(pid==0) {
+            time_t start_time=time(NULL);
             sleep(cmd->time);
             execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
+            time_t stop_time=time(NULL);
+            if(is_logging_allowed())
+                log(cmd->command, (stop_time-start_time));
             exit(0);
         }
         else if(pid>0) {
@@ -85,8 +91,12 @@ void execute_command(void* cmd_args) {
     else if(cmd->type==BACKGROUND) {
         pid=fork();
         if(pid==0) {
+            time_t start_time=time(NULL);
             sleep(cmd->time);
             execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
+            time_t stop_time=time(NULL);
+            if(is_logging_allowed())
+                log(cmd->command, (stop_time-start_time));
             exit(0);
         }
         else if(pid>0) {
@@ -100,7 +110,11 @@ void execute_command(void* cmd_args) {
     else {
         pid=fork();
         if(pid==0) {
+            time_t start_time=time(NULL);
             execl(INTERPRETER, INTERPRETER, "-c", cmd->command, NULL);
+            time_t stop_time=time(NULL);
+            if(is_logging_allowed())
+                log(cmd->command, (stop_time-start_time));
             exit(0);
         }
         else if(pid>0) {
