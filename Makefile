@@ -3,7 +3,7 @@ install: scriptRunner clean
 	rm -rf scriptRunner
 
 scriptRunner: command.o scriptRunner.o
-	gcc scriptRunner.o command.o os.o types.o cleanup.o misc.o -o scriptRunner
+	gcc scriptRunner.o command.o os.o types.o cleanup.o misc.o logging.o -o scriptRunner
 
 scriptRunner.o:
 	gcc src/scriptRunner.c -c scriptRunner.o

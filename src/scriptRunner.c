@@ -6,6 +6,7 @@
 #include "include/cleanup.h"
 #include "include/command.h"
 #include "include/os.h"
+#include "include/logging.h"
 
 /*
     To Do -
@@ -16,8 +17,8 @@
 
 int main(int argc, char **argv) {
     int status=0;
-    int log_status=0;
-    char* scriptfile;
+    int logfilenum=0;
+    int scriptfilenum=1;
     if(argc<2) {
         printf("Error! Input file not provided\n");
         status=1;
@@ -31,17 +32,16 @@ int main(int argc, char **argv) {
             status=1;
             goto exit_label;
         }
-        scriptfile=(char*)malloc(sizeof(char)*strlen(argv[1]));
-        strcpy(scriptfile, argv[1]);
+        scriptfilenum=1;
     }
     else if(argc==3) {
-        if(strstr(argv[1], "---logging")) {
-            scriptfile=(char*)malloc(sizeof(char)*strlen(argv[1]));
-            strcpy(scriptfile, argv[1]);
+        if(strstr(argv[1], "---logging")) { 
+            scriptfilenum=2;
+            logfilenum=1;
         }
         else {
-            scriptfile=(char*)malloc(sizeof(char)*strlen(argv[2]));
-            strcpy(scriptfile, argv[2]);
+            scriptfilenum=1;
+            logfilenum=2;
         }
     }
     else {
@@ -50,15 +50,17 @@ int main(int argc, char **argv) {
         goto exit_label;
     }
 
-    init(scriptfile, log_status);
+    init_logging(logfilenum, argv[logfilenum]);
+    init();
     FILE *file;
-    file=fopen(scriptfile, "r");
+    file=fopen(argv[scriptfilenum], "r");
     if(file==NULL) {
         perror("Error! script file failed to open");
         status=1;
         goto exit_label;
     }
 
+    change_directory(argv[scriptfilenum]);
     char* input_line=NULL;
     size_t len=0;
     while(getline(&input_line, &len, file)!=EOF) {

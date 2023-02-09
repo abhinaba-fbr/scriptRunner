@@ -19,9 +19,7 @@ void signal_handler(int sig) {
     }
 }
 
-void init(char* scriptfile, int log_status) {
-    init_logging(log_status);
-    change_directory(scriptfile);
+void init() {
     if(signal(SIGINT, signal_handler)==SIG_ERR)
         printf("scriptRunner interrupted!");
     if(signal(SIGTERM, signal_handler)==SIG_ERR)

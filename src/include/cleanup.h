@@ -8,7 +8,7 @@ struct background_processes {
     int size;
 };
 
-void init(char*, int);
+void init();
 
 void add_background_process(int pid);
 
