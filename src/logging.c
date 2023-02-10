@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<unistd.h>
 #include "include/logging.h"
 
 struct logging* log_ops=NULL;
@@ -26,6 +27,7 @@ void Log(char* command, double time) {
     if(command[len-1]=='\n')
         command[len-1]='\0';
     fprintf(log_ops->log_file, "%s @time@ %f\n", command, time);
+    fflush(log_ops->log_file);
     return;
 }
 
