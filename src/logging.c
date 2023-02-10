@@ -37,6 +37,7 @@ void Log(char* command, double time) {
 }
 
 void exit_logging() {
-    fclose(log_ops->log_file);
+    if(log_ops->is_logging)
+        fclose(log_ops->log_file);
     return;
 }
