@@ -22,7 +22,6 @@ int main(int argc, char **argv) {
     if(argc<2) {
         printf("Error! Input file not provided\n");
         status=1;
-        goto exit_label;
         exit_error_label:
             exit(1);
     }
@@ -30,7 +29,7 @@ int main(int argc, char **argv) {
         if(strstr(argv[1], "---logging")){
             printf("Error! Input file not provided\n");
             status=1;
-            goto exit_label;
+            goto exit_error_label;
         }
         scriptfilenum=1;
     }
@@ -47,7 +46,7 @@ int main(int argc, char **argv) {
     else {
         printf("Error! argument not recognized\n");
         status=1;
-        goto exit_label;
+        goto exit_error_label;
     }
 
     init_logging(logfilenum, argv[logfilenum]);
