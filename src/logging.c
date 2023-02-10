@@ -10,11 +10,16 @@ void init_logging(int allow, char* log_file) {
     log_ops=(struct logging*)malloc(sizeof(struct logging));
     log_ops->is_logging=allow;
     if(log_ops->is_logging) {
-        int length=strlen(log_file);
-        int pos=strstr(log_file, "=") - log_file;
-        char* log_file_name=(char*)malloc(sizeof(char)*(length-pos-1));
-        strncpy(log_file_name, log_file+pos+1, (length-pos-1));
-        log_ops->log_file=fopen(log_file_name, "w");
+        if(strstr(log_file, "---logging=")) {
+            int length=strlen(log_file);
+            int pos=strstr(log_file, "=") - log_file;
+            char* log_file_name=(char*)malloc(sizeof(char)*(length-pos-1));
+            strncpy(log_file_name, log_file+pos+1, (length-pos-1));
+            log_ops->log_file=fopen(log_file_name, "w");
+        }
+        else {
+            log_ops->log_file=fopen("scriptRunner.log", "w");
+        }
     }
 }
 
