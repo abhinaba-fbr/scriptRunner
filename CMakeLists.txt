@@ -10,7 +10,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 add_subdirectory(ScriptRunner/src/lib)
 
 # create the binary for the scriptRunner
-add_executable(scriptRunner ScriptRunner/src/scriptRunner.c)
+add_executable(scriptRunner ScriptRunner/src/main.c)
 
 target_link_libraries(scriptRunner PRIVATE scriptRunnerlibrary)
 
